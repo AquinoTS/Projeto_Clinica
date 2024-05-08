@@ -8,7 +8,7 @@ Basta criar a sua pasta de diretório, acessa-lá pelo cmd e dar o seguinte coma
 composer global require laravel/installer
 ```
 
-Para acessar o seu localhost:
+- Para acessar o seu localhost:
 ```
 php artisan serve
 ```
