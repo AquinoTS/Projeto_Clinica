@@ -1,0 +1,44 @@
+# Use a imagem oficial do PHP com o Apache como servidor web
+FROM php:8.2-apache
+
+# Atualize a lista de pacotes e instale algumas dependências
+RUN apt-get update && apt-get install -y \
+    git \
+    zip \
+    unzip \
+    libzip-dev \
+    && docker-php-ext-install pdo_mysql zip
+
+# Copie o arquivo de configuração do Apache para habilitar o mod_rewrite
+COPY .docker/apache2.conf /etc/apache2/apache2.conf
+
+# Ative o mod_rewrite do Apache
+RUN a2enmod rewrite
+
+# Defina o diretório de trabalho como /var/www/html
+WORKDIR /var/www/html
+
+# Clone o repositório do seu projeto Laravel
+RUN git clone https://github.com/AquinoTS/Projeto_Clinica .
+
+# Copie o arquivo .env.example como .env
+COPY .env.example .env
+
+# Copie o arquivo composer.json
+COPY composer.json /var/www/html/composer.json
+
+# Instale as dependências do Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer install
+
+# Copie o script de inicialização personalizado
+COPY .docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+# Conceda permissão de execução ao script de inicialização
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Exponha a porta 80 para o tráfego HTTP
+EXPOSE 80
+
+# Execute o script de inicialização como comando padrão
+CMD ["/usr/local/bin/entrypoint.sh"]
