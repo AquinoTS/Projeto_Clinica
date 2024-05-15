@@ -13,7 +13,7 @@
     },
     "scripts": {
         "test": "jest",
-        "start": "concurrently \"node app.js\" \"electron .\"",
+        "start": "concurrently \"node main.js\" \"electron .\"",
         "dev": "npm run development",
         "development": "mix",
         "watch": "mix watch",
